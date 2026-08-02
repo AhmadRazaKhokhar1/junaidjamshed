@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-test-app",
-  "version": "0.1.0",
+  "name": "junaid-jamshed",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
