@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { Footer, NavBar } from "@lib/ui/useable-components";
+import { ReactNode } from "react";
 
 
 const geistSans = Geist({
@@ -14,26 +14,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const clientMetaData: Metadata = {
   title: "Junaid Jamshed",
   description: "Shop J. (Junaid Jamshed) online for premium Pakistani fashion, unstitched and ready-to-wear collections, fragrances, cosmetics, accessories, and traditional styles for men, women, and kids.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const ClientLayout = ({children}:{children:ReactNode}) => {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col justify-between">
-        <NavBar/>
+        <NavBar />
         {children}
-        <Footer/>
-        </body>
+        <Footer />
+      </body>
     </html>
   );
-}
+};
