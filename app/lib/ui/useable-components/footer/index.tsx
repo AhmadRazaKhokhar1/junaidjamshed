@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export const Footer = () => {
   return (
     <div className="flex flex-col items-start justify-start">
