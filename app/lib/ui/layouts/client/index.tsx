@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Footer, NavBar } from "@lib/ui/useable-components";
-import { ReactNode } from "react";
-
+import { ReactNode, Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,10 +15,11 @@ const geistMono = Geist_Mono({
 
 export const clientMetaData: Metadata = {
   title: "Junaid Jamshed",
-  description: "Shop J. (Junaid Jamshed) online for premium Pakistani fashion, unstitched and ready-to-wear collections, fragrances, cosmetics, accessories, and traditional styles for men, women, and kids.",
+  description:
+    "Shop J. (Junaid Jamshed) online for premium Pakistani fashion, unstitched and ready-to-wear collections, fragrances, cosmetics, accessories, and traditional styles for men, women, and kids.",
 };
 
-export const ClientLayout = ({children}:{children:ReactNode}) => {
+export const ClientLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html
       lang="en"
@@ -27,7 +27,7 @@ export const ClientLayout = ({children}:{children:ReactNode}) => {
     >
       <body className="min-h-full flex flex-col justify-between">
         <NavBar />
-        {children}
+        <Suspense fallback={<div>Loading ....</div>}>{children}</Suspense>
         <Footer />
       </body>
     </html>
