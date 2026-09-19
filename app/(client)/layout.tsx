@@ -1,7 +1,6 @@
 import "@app/globals.css";
 import { ClientLayout, clientMetaData } from "@lib/ui/layouts";
-import { ReactNode, Suspense } from "react";
-import Loading from "./loading";
+import { ReactNode } from "react";
 
 export { clientMetaData as metadata };
 

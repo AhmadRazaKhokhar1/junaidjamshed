@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Footer, NavBar } from "@lib/ui/useable-components";
 import { ReactNode, Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export const ClientLayout = ({ children }: { children: ReactNode }) => {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col justify-between">
+       <Toaster />
         <NavBar />
         <Suspense fallback={<div>Loading ....</div>}>{children}</Suspense>
         <Footer />

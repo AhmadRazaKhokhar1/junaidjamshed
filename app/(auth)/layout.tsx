@@ -1,3 +1,4 @@
+import "@app/globals.css";
 import { AuthLayout, authMetaData } from "@lib/ui/layouts";
 import { ReactNode } from "react";
 
