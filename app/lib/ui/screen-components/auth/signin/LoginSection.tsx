@@ -1,15 +1,9 @@
 "use client";
 import SignInLogo from "@app/assets/junaidjamshed-logo.webp";
 import { FaArrowRight } from "react-icons/fa";
-import { MouseEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { showToast } from "@app/lib/helpers";
-
-import { firebaseAuth } from "@app/lib/services";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 import { VscLoading } from "react-icons/vsc";
 
 export const LoginSection = () => {
