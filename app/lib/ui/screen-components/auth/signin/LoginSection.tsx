@@ -1,31 +1,48 @@
 "use client";
 import SignInLogo from "@app/assets/junaidjamshed-logo.webp";
 import { FaArrowRight } from "react-icons/fa";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { showToast } from "@app/lib/helpers";
 
 import { firebaseAuth } from "@app/lib/services";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { VscLoading } from "react-icons/vsc";
 
 export const LoginSection = () => {
-
   const [isEmailInputFocused, setIsEmailInputFocused] = useState(false);
   const [email, setEmail] = useState("");
+  const [isSendingOtp, setIsSendingOtp] = useState(false)
 
-  const continueWithEmail = (e: MouseEvent) => {
-    e.preventDefault();
-    if (!email) {
-      return showToast({
-        type:"error",
-        msg:"Email is required"
-      })
+  async function sendOtp() {
+    try {
+      setIsSendingOtp(true)
+      if (!email) {
+        return showToast({ type: "error", msg: "Email is a required field" });
+      }
+
+      const resp = await fetch(`/api/resend-email-api?email=${email}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (resp.ok) {
+        showToast({
+          type: "success",
+          msg: `OTP is sent to your email: ${email}`,
+        });
+      }
+    } catch (error) {
+      console.error(error, "Error occured while sending the email");
+    }finally{
+      setIsSendingOtp(false)
     }
-
-    const resp = createUserWithEmailAndPassword(firebaseAuth, email, "Test123")
-console.log("response", resp)
-  };
+  }
 
   return (
     <div className="flex flex-col items-center justify-between size-full py-10">
@@ -72,9 +89,9 @@ console.log("response", resp)
               <button
                 type="submit"
                 className="size-8.5 hover:bg-gray-200 cursor-pointer rounded-xl flex justify-center items-center"
-                onClick={(e) => continueWithEmail(e)}
+                onClick={sendOtp}
               >
-                <FaArrowRight color="black" size={16} />
+                {isSendingOtp?<VscLoading color="black" size={16} className="animate-spin"/>:<FaArrowRight color="black" size={16} />}
               </button>
             </div>
           </div>
