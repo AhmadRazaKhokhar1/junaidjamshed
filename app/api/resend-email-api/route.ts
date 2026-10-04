@@ -1,6 +1,13 @@
-import { getEnvConfig } from "@app/lib/helpers";
+import {
+  createFirebaseDocument,
+  getEnvConfig,
+  uuid,
+} from "@lib/helpers";
 import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
+import { firebase_db } from "@lib/services";
+import { Timestamp } from "firebase-admin/firestore";
+
 const {
   NEXT_PUBLIC_SMTP_USER,
   NEXT_PUBLIC_SMTP_PASSWORD,
@@ -24,7 +31,23 @@ export async function POST(request: NextRequest) {
         pass: NEXT_PUBLIC_SMTP_PASSWORD,
       },
     });
-    const otp = Math.round(Math.random()*999999);
+    const otp = Math.round(Math.random() * 999999);
+    const date = new Date().getTime() + 5 * 60 * 1000;
+    const expiryDate = new Date(date);
+    const expiryTime = Timestamp.fromDate(expiryDate);
+    const payload = {
+      otp,
+      expiryTime,
+      userEmail:email,
+      isExpired: false 
+    };
+    const otp_id = uuid();
+
+    await createFirebaseDocument({
+      collection: `OTP/${otp_id}`,
+      data: payload,
+    });
+
     const { messageId } = await mailTransporter.sendMail({
       from: "Junaid Jamshed <ahmadrazawebexpert@gmail.com>",
       to: email,

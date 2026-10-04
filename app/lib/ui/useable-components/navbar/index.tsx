@@ -1,10 +1,11 @@
 import NavBarLogo from "@app/assets/junaidjamshed-logo.webp"
+import Link from "next/link"
 
 export const NavBar = () => {
 
     return <nav>
         <div className="bg-[#C8C0B8] h-10 w-full px-10 gap-7.5 flex items-center text-xs">
-            <span>SIGN IN</span>
+            <Link href={"/signin"}>SIGN IN</Link>
             <span>TRACKING INFO</span>
             <span>GIFTING</span>
         </div>

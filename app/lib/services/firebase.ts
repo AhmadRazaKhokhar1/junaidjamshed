@@ -1,7 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getEnvConfig } from "@lib/helpers";
-import { getAuth } from "firebase/auth";
-
 const {
   NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -23,4 +21,3 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
-export const firebaseAuth = getAuth(firebaseApp);

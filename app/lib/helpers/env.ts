@@ -17,6 +17,7 @@ export const getEnvConfig = () => {
     NEXT_PUBLIC_SMTP_PASSWORD: process.env.NEXT_PUBLIC_SMTP_PASSWORD,
     NEXT_PUBLIC_SMTP_USER: process.env.NEXT_PUBLIC_SMTP_USER,
     NEXT_PUBLIC_SMTP_HOST: process.env.NEXT_PUBLIC_SMTP_HOST,
-    RESEND_API_KEY:process.env.RESEND_API_KEY
+    RESEND_API_KEY:process.env.RESEND_API_KEY,
+    FIREBASE_SERVICE_ACCOUNT: process.env.FIREBASE_SERVICE_ACCOUNT,
   } as const;
 };
