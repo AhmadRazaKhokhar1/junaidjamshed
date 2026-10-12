@@ -12,4 +12,5 @@ export interface EnterEmailSectionProps {
 export interface VerifyOtpProps {
   otp: string;
   setOtp: Dispatch<SetStateAction<string>>;
+  verifyOtp: () => Promise<Response | undefined>
 }

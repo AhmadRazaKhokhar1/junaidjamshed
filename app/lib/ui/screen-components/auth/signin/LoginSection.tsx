@@ -1,6 +1,6 @@
 "use client";
 import SignInLogo from "@app/assets/junaidjamshed-logo.webp";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { showToast } from "@app/lib/helpers";
 import { LoginStep } from "@utils/enums";
@@ -44,27 +44,29 @@ export const LoginSection = () => {
     }
   }
 
-  async function verifyOtp() {
-    // if (!otp) {
-    //   return showToast({
-    //     msg: "OTP is a required value, please fill in to continue",
-    //     type: "error",
-    //   });
-    // }
-    // if(!email){
-    //   showToast({
-    //     msg: "Email is a required value, please fill in to continue",
-    //     type: "error",
-    //   });
-    //   return setSignInStep(LoginStep.ENTER_EMAIL)
-    // }
+  const verifyOtp = useCallback(async () => {
+    if(!email){
+      console.log({email}, "EMAIL FROM VALIDATION")
+      showToast({
+        msg: "Email is a required value, please fill in to continue",
+        type: "error",
+      });
+      setSignInStep(LoginStep.ENTER_EMAIL)
+      return;``
+    }
+    const response = await fetch(`/api/verify-otp?email=${email}&otp=${otp}`, {
+      method: "GET"
+    });
+    const data = await response?.json();
+    console.log("data from verify otp api path: ", { response:data })
+    return response
+  }, [otp, email]);
 
-    const response = await fetch(`/api/verify-otp?email=${email}&otp=${otp}`);
-    // const data = await response.json();
-    console.log("data from verify otp api path: ", {response})
-  }
-
-  console.log({otp})
+  useEffect(()=>{
+    if(otp.length >= 6){
+      verifyOtp()
+    }
+  },[otp])
   return (
     <div className="flex flex-col items-center justify-between size-full py-10">
       <div className="size-12.5 overflow-hidden">

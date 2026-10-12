@@ -1,7 +1,26 @@
 import { VerifyOtpProps } from "@utils/interfaces";
+import { useEffect, useState } from "react";
 import OTPInput from "react-otp-input";
+import { showToast } from "../../../../helpers";
 
-export const VerifyOtp = ({ otp, setOtp, verifyOtp}: VerifyOtpProps) => {
+export const VerifyOtp = ({ otp, setOtp, verifyOtp }: VerifyOtpProps) => {
+  const [pasted, setPasted] = useState(false);
+  const [isOtpValid, setIsOtpValid] = useState(false);
+  
+  useEffect(() => {
+    if (pasted) {
+      if (otp.length < 6) {
+        showToast({
+          type: "error",
+          msg: "OTP length must be 6, please paste correct OTP."
+        });
+        setIsOtpValid(false)
+      }else{
+        setIsOtpValid(true)
+      }
+      setPasted(false)
+    }
+  }, [pasted])
   return (
     <div>
       <div className="flex flex-col gap-2 my-4">
@@ -23,7 +42,12 @@ export const VerifyOtp = ({ otp, setOtp, verifyOtp}: VerifyOtpProps) => {
           fontWeight: "bold",
           fontSize: "1.7rem",
         }}
-        onPaste={verifyOtp}
+        onPaste={() => {
+          setPasted(true)
+          if(isOtpValid){
+            verifyOtp()
+          }
+        }}
         shouldAutoFocus={true}
       />
     </div>
