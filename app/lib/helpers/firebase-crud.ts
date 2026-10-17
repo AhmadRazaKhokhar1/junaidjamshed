@@ -1,12 +1,11 @@
 "use server";
 import { FirebaseCrudParameters } from "@app/utils/interfaces";
 import { firebase_db } from "@lib/services";
-import { ReadOptions } from "firebase-admin/firestore";
 
 export const createFirebaseDocument = async <T>({
   collection,
   data,
-}: Partial<FirebaseCrudParameters<T>>) => {
+}: Omit<FirebaseCrudParameters<T>, "id">) => {
   if (!collection) {
     throw Error("Collection is a required paramter!");
   }
@@ -32,6 +31,9 @@ export const updateFirebaseDocument = async <T>({
   id,
 }: FirebaseCrudParameters<T>) => {
   try {
+    if(!id){
+      throw new Error("ID is required field")
+    }
     await firebase_db.doc(`${collection}/${id}`).update(data);
   } catch (error) {
     console.error(
@@ -44,8 +46,11 @@ export const updateFirebaseDocument = async <T>({
 export const deleteFirebaseDocument = async <T>({
   collection,
   id,
-}: FirebaseCrudParameters<T>) => {
+}: Omit<FirebaseCrudParameters<T>, "data">) => {
   try {
+     if(!id){
+      throw new Error("ID is required field")
+    }
     await firebase_db.doc(`${collection}/${id}`).delete();
   } catch (error) {
     console.error(
@@ -57,10 +62,12 @@ export const deleteFirebaseDocument = async <T>({
 
 export const getFirebaseDocumentById = async <T>({
   collection,
-  data,
   id,
-}: FirebaseCrudParameters<T>) => {
+}: Omit<FirebaseCrudParameters<T>, "data">) => {
   try {
+     if(!id){
+      throw new Error("ID is required field")
+    }
     const snapshot = await firebase_db.doc(`${collection}/${id}`).get();
     if (snapshot.exists) {
       return snapshot.data();
@@ -76,9 +83,8 @@ export const getFirebaseDocumentById = async <T>({
 
 export const getFirebaseDocuments = async <T>({
   collection,
-}: FirebaseCrudParameters<T>) => {
+}: Pick<FirebaseCrudParameters<T>, "collection">) => {
   try {
-    // const snapshot = await firebase_db.doc(collection).get();
     const snapshot = await firebase_db.collection(collection);
     if (snapshot) {
       return snapshot.get()

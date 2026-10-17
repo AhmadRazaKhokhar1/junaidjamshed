@@ -8,6 +8,7 @@ import { EnterEmailSection } from "./EnterEmail";
 import { VerifyOtp } from "./VerifyOtp";
 
 export const LoginSection = () => {
+  const [otpId, setOtpId] = useState(null);
   const [isEmailInputFocused, setIsEmailInputFocused] = useState(false);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -36,6 +37,8 @@ export const LoginSection = () => {
           msg: `OTP is sent to your email: ${email}`,
         });
         setSignInStep(LoginStep.VERIFY_OTP);
+        const data = await resp.json();
+        setOtpId(data.otp_id)
       }
     } catch (error) {
       console.error(error, "Error occured while sending the email");
@@ -43,7 +46,7 @@ export const LoginSection = () => {
       setIsSendingOtp(false);
     }
   }
-
+console.log({otpId})
   const verifyOtp = useCallback(async () => {
     if(!email){
       console.log({email}, "EMAIL FROM VALIDATION")
@@ -54,7 +57,7 @@ export const LoginSection = () => {
       setSignInStep(LoginStep.ENTER_EMAIL)
       return;``
     }
-    const response = await fetch(`/api/verify-otp?email=${email}&otp=${otp}`, {
+    const response = await fetch(`/api/verify-otp?email=${email}&otp=${otp}&otp_id=${otpId}`, {
       method: "GET"
     });
     const data = await response?.json();

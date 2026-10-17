@@ -5,7 +5,6 @@ import {
 } from "@lib/helpers";
 import { NextRequest } from "next/server";
 import nodemailer from "nodemailer";
-import { firebase_db } from "@lib/services";
 import { Timestamp } from "firebase-admin/firestore";
 
 const {
@@ -58,7 +57,7 @@ export async function POST(request: NextRequest) {
       </div>`,
     });
 
-    return Response.json({ messageId });
+    return Response.json({ messageId, otp_id });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }

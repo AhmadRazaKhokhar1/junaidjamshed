@@ -1,47 +1,71 @@
 import { NextRequest } from "next/server";
-import { getFirebaseDocuments } from "../../lib/helpers";
+import { getFirebaseDocumentById, getFirebaseDocuments, updateFirebaseDocument } from "../../lib/helpers";
 import { Timestamp } from "firebase-admin/firestore";
+import { firebase_db } from "../../lib/services";
 
 interface DocumentsType {
   email: string;
   otp: string;
 }
+
+interface OtpObject {
+  otp: number,
+  expiryTime: Timestamp,
+  userEmail: string,
+  isExpired: boolean
+}
 export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl;
-  const otp = searchParams.get("otp");
-  const email = searchParams.get("email");
+  try {
+    const { searchParams } = request.nextUrl;
+    const otp = searchParams.get("otp");
+    const email = searchParams.get("email");
+    const otp_id = searchParams.get("otp_id");
 
-  const docs = await getFirebaseDocuments({
-    collection: "OTP",
-  });
-  const data = docs?.docs as unknown as DocumentsType[];
+    const doc = await getFirebaseDocumentById({
+      collection: "OTP",
+      id: otp_id || undefined
+    });
+    console.log({docFromFirebase:doc})
+    const otpObj = doc;
 
-  const flatenedArray: {
-    otp: number,
-    expiryTime: Timestamp,
-    userEmail: string,
-    isExpired: boolean
-  }[] = data?.flatMap((doc) => [doc.data()]);
-  console.log(flatenedArray)
-  // .sort((a, b) => a.expiryTime._nanoseconds - b.expiryTime._nanoseconds)?
-  const newFilteredArray = flatenedArray.filter((doc) => doc.userEmail === email && Number(doc.otp) === Number(otp));
-  const otpObj = newFilteredArray[0]
-  console.log({otpObj})
-  if(!otpObj){
+    console.log({ otpObj })
+    if (!otpObj) {
+      return Response.json({
+        error: "The OTP is invalid or expired",
+      });
+    }
+    const dateNow = new Date();
+    const timeNow = dateNow.getTime()
+    const timeNowInSec = Math.floor(timeNow / 1000)
+    console.log({ expiryTime: otpObj.expiryTime.seconds })
+
+    console.log({ timeNowInSec })
+    if(otpObj.isExpired){
+      return  Response.json({
+        error: "The OTP is expired",
+      });
+    }
+    if (timeNowInSec > otpObj.expiryTime.seconds) {
+      await updateFirebaseDocument({
+        collection:"OTP",
+        id: otp_id || undefined,
+        data:{
+          ...doc,
+          isExpired:true
+        }
+      })
+      return Response.json({
+        error: "The OTP is expired",
+      });
+    }
+
     return Response.json({
-      error:"The OTP is invalid or expired",
+      msg: "The OTP is validated",
+      otpObj,
+    });
+  } catch (error) {
+    return Response.json({
+      msg: `The verify otp api has failed with an exception: ${error}`,
     });
   }
-const dateNow = new Date();
-const timeNow = dateNow.getTime()
-  if(otpObj.expiryTime.nanoseconds > timeNow){
-    return Response.json({
-      error:"The OTP is expired",
-    });
-  }
-
-  return Response.json({
-    msg:"The OTP is validated",
-    otpObj,
-  });
 }
