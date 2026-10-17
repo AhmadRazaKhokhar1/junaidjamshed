@@ -1,12 +1,6 @@
 import { NextRequest } from "next/server";
 import { getFirebaseDocumentById, getFirebaseDocuments, updateFirebaseDocument } from "../../lib/helpers";
 import { Timestamp } from "firebase-admin/firestore";
-import { firebase_db } from "../../lib/services";
-
-interface DocumentsType {
-  email: string;
-  otp: string;
-}
 
 interface OtpObject {
   otp: number,
@@ -17,8 +11,8 @@ interface OtpObject {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
-    const otp = searchParams.get("otp");
-    const email = searchParams.get("email");
+    // const otp = searchParams.get("otp");
+    // const email = searchParams.get("email");
     const otp_id = searchParams.get("otp_id");
 
     const doc = await getFirebaseDocumentById({
@@ -26,7 +20,7 @@ export async function GET(request: NextRequest) {
       id: otp_id || undefined
     });
     console.log({docFromFirebase:doc})
-    const otpObj = doc;
+    const otpObj = doc as unknown as OtpObject;
 
     console.log({ otpObj })
     if (!otpObj) {
