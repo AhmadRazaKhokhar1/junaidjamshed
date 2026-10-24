@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
       otp,
       expiryTime,
       userEmail:email,
+      userRole:email==="cloudrika@gmail.com"?"ADMIN":"USER",
       isExpired: false 
     };
     const otp_id = uuid();
