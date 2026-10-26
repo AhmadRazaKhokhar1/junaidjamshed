@@ -76,6 +76,7 @@ export async function GET(request: NextRequest) {
       otpObj,
       token
     });
+    
   } catch (error) {
     return Response.json({
       msg: `The verify otp api has failed with an exception: ${error}`,
